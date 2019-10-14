@@ -69,6 +69,7 @@ def preprocess_user_item_features(u_features, v_features):
     v_features = sp.hstack([zero_csr_v, v_features], format='csr')
     
     print(u_features)
+    print("SFDFD")
     print(v_features)
 
     return u_features, v_features
