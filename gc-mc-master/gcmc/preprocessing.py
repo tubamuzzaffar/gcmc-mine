@@ -65,6 +65,15 @@ def preprocess_user_item_features(u_features, v_features):
     zero_csr_u = sp.csr_matrix((u_features.shape[0], v_features.shape[1]), dtype=u_features.dtype)
     zero_csr_v = sp.csr_matrix((v_features.shape[0], u_features.shape[1]), dtype=v_features.dtype)
 
+    print(zero_csr_u)
+    print("SFDFD")
+    print(zero_csr_v)
+    print("&")
+    print(u_features)
+    print("SFDFD")
+    print(v_features)
+    print("&")
+    
     u_features = sp.hstack([u_features, zero_csr_u], format='csr')
     v_features = sp.hstack([zero_csr_v, v_features], format='csr')
     
