@@ -25,7 +25,11 @@ seed = int(time.time())
 np.random.seed(seed)
 tf.set_random_seed(seed)
 
+
+#This is for taking in the dataset - processing it and calls all the relevant functions. 
+
 # Settings
+# various arguments it takes in 
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", type=str, default="ml_1m",
                 choices=['ml_100k', 'ml_1m', 'ml_10m', 'douban', 'yahoo_music', 'flixster'],
@@ -94,6 +98,7 @@ args = vars(ap.parse_args())
 print('Settings:')
 print(args, '\n')
 
+#All the arguments as defined before are assigned
 # Define parameters
 DATASET = args['dataset']
 DATASEED = args['data_seed']
@@ -114,6 +119,8 @@ SELFCONNECTIONS = False
 SPLITFROMFILE = True
 VERBOSE = True
 
+
+#Number of classes -->i.e. rating levels?
 if DATASET == 'ml_1m' or DATASET == 'ml_100k' or DATASET == 'douban':
     NUMCLASSES = 5
 elif DATASET == 'ml_10m':
@@ -149,6 +156,8 @@ if DATASET == 'flixster' or DATASET == 'douban' or DATASET == 'yahoo_music':
         val_labels, val_u_indices, val_v_indices, test_labels, \
         test_u_indices, test_v_indices, class_values = load_data_monti(DATASET, TESTING)
 
+    
+#FOCUSING ON THIS ONE    
 elif DATASET == 'ml_100k':
     print("Using official MovieLens dataset split u1.base/u1.test with 20% validation set size...")
     u_features, v_features, adj_train, train_labels, train_u_indices, train_v_indices, \
@@ -161,36 +170,48 @@ else:
         test_u_indices, test_v_indices, class_values = create_trainvaltest_split(DATASET, DATASEED, TESTING,
                                                                                  datasplit_path, SPLITFROMFILE,
                                                                                  VERBOSE)
-
+#The user and item matricies - shape is given 
 num_users, num_items = adj_train.shape
-
+# initialise number of side features 
 num_side_features = 0
 
 # feature loading
+# if there are no features - an identity matrix using scipy.sparse.identity is used 
+#essentially a diagonal of 1s 
 if not FEATURES:
     u_features = sp.identity(num_users, format='csr')
     v_features = sp.identity(num_items, format='csr')
 
+    #SENT to preprocessing to create the u_features and v_features matrix 
     u_features, v_features = preprocess_user_item_features(u_features, v_features)
 
+    # if there are features (a.k.a side information) then this is processed
 elif FEATURES and u_features is not None and v_features is not None:
     # use features as side information and node_id's as node input features
-
+    #The features are normalised --> fit a scale
     print("Normalizing feature vectors...")
     u_features_side = normalize_features(u_features)
     v_features_side = normalize_features(v_features)
-
+    
+    #Goes to preprocess the user_item_features 
+    # the matrices are combined to make one massive matrix  
     u_features_side, v_features_side = preprocess_user_item_features(u_features_side, v_features_side)
-
+   
+    #returns a dense matrix representation of botht he user and item features using scipy
     u_features_side = np.array(u_features_side.todense(), dtype=np.float32)
     v_features_side = np.array(v_features_side.todense(), dtype=np.float32)
-
+    
+    print(u_features_side)
+    
+    #size of features is the size of the feature matrix 
     num_side_features = u_features_side.shape[1]
 
     # node id's for node input features
+    # creates node id identity matrix for identifying each nodeinput feature
     id_csr_v = sp.identity(num_items, format='csr')
     id_csr_u = sp.identity(num_users, format='csr')
-
+    
+    #This is perprocessed too
     u_features, v_features = preprocess_user_item_features(id_csr_u, id_csr_v)
 
 else:
@@ -200,6 +221,7 @@ else:
 # global normalization
 support = []
 support_t = []
+#Produces a compressed sparse row matrix for the adjacency matrix --> to construct an empty matrix with shape (M, N) 
 adj_train_int = sp.csr_matrix(adj_train, dtype=np.int32)
 
 for i in range(NUMCLASSES):
@@ -210,12 +232,13 @@ for i in range(NUMCLASSES):
         # yahoo music has dataset split with not all ratings types present in training set.
         # this produces empty adjacency matrices for these ratings.
         sys.exit('ERROR: normalized bipartite adjacency matrix has only zero entries!!!!!')
-
+    
+    #CLARIFICATION
     support_unnormalized_transpose = support_unnormalized.T
     support.append(support_unnormalized)
     support_t.append(support_unnormalized_transpose)
 
-
+#normalises the bipartite adjacency matrix 
 support = globally_normalize_bipartite_adjacency(support, symmetric=SYM)
 support_t = globally_normalize_bipartite_adjacency(support_t, symmetric=SYM)
 
@@ -223,6 +246,7 @@ if SELFCONNECTIONS:
     support.append(sp.identity(u_features.shape[0], format='csr'))
     support_t.append(sp.identity(v_features.shape[0], format='csr'))
 
+#support is the adjancency matrix produced 
 num_support = len(support)
 support = sp.hstack(support, format='csr')
 support_t = sp.hstack(support_t, format='csr')
@@ -234,6 +258,7 @@ if ACCUM == 'stack':
                   it can be evenly split in %d splits.\n""" % (HIDDEN[0], num_support * div, num_support))
     HIDDEN[0] = num_support * div
 
+#TESTING SET     
 # Collect all user and item nodes for test set
 test_u = list(set(test_u_indices))
 test_v = list(set(test_v_indices))
@@ -267,9 +292,11 @@ train_v_dict = {n: i for i, n in enumerate(train_v)}
 train_u_indices = np.array([train_u_dict[o] for o in train_u_indices])
 train_v_indices = np.array([train_v_dict[o] for o in train_v_indices])
 
+#adjacency support matrix --> trainign array with indicies 
 train_support = support[np.array(train_u)]
 train_support_t = support_t[np.array(train_v)]
 
+#features are gotten as side information 
 # features as side info
 if FEATURES:
     test_u_features_side = u_features_side[np.array(test_u)]
@@ -291,6 +318,7 @@ else:
     train_u_features_side = None
     train_v_features_side = None
 
+    #Inserts a placeholder for a sparse tensor that will be always fed. --> cannot be evaluated just handles feeding
 placeholders = {
     'u_features': tf.sparse_placeholder(tf.float32, shape=np.array(u_features.shape, dtype=np.int64)),
     'v_features': tf.sparse_placeholder(tf.float32, shape=np.array(v_features.shape, dtype=np.int64)),
@@ -314,6 +342,7 @@ placeholders = {
 }
 
 # create model
+#creates the model if there are features 
 if FEATURES:
     model = RecommenderSideInfoGAE(placeholders,
                                    input_dim=u_features.shape[1],
