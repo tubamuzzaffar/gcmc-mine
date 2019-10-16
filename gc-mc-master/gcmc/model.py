@@ -200,12 +200,12 @@ class RecommenderGAE(Model):
                                            diagonal=False))
 
 
+ #creates a recommender GAE for side information        
 class RecommenderSideInfoGAE(Model):
     def __init__(self,  placeholders, input_dim, feat_hidden_dim, num_classes, num_support,
                  learning_rate, num_basis_functions, hidden, num_users, num_items, accum,
                  num_side_features, self_connections=False, **kwargs):
         super(RecommenderSideInfoGAE, self).__init__(**kwargs)
-
         self.inputs = (placeholders['u_features'], placeholders['v_features'])
         self.u_features_side = placeholders['u_features_side']
         self.v_features_side = placeholders['v_features_side']
@@ -222,6 +222,7 @@ class RecommenderSideInfoGAE(Model):
 
         self.num_side_features = num_side_features
         self.feat_hidden_dim = feat_hidden_dim
+        
         if num_side_features > 0:
             self.u_features_side = placeholders['u_features_side']
             self.v_features_side = placeholders['v_features_side']
@@ -229,7 +230,8 @@ class RecommenderSideInfoGAE(Model):
         else:
             self.u_features_side = None
             self.v_features_side = None
-
+        
+        #sets arguments 
         self.hidden = hidden
         self.num_basis_functions = num_basis_functions
         self.num_classes = num_classes
@@ -240,12 +242,14 @@ class RecommenderSideInfoGAE(Model):
         self.num_items = num_items
         self.accum = accum
         self.learning_rate = learning_rate
-
+        
+        #uses Adam optimiser 
         # standard settings: beta1=0.9, beta2=0.999, epsilon=1.e-8
         self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate, beta1=0.9, beta2=0.999, epsilon=1.e-8)
-
+        
         self.build()
-
+        
+        #TRAINING 
         moving_average_decay = 0.995
         self.variable_averages = tf.train.ExponentialMovingAverage(moving_average_decay, self.global_step)
         self.variables_averages_op = self.variable_averages.apply(tf.trainable_variables())
@@ -272,6 +276,7 @@ class RecommenderSideInfoGAE(Model):
 
     def _build(self):
         if self.accum == 'sum':
+            #Comes here --> builds the GCN based on the accumulation function specified
             self.layers.append(OrdinalMixtureGCN(input_dim=self.input_dim,
                                                  output_dim=self.hidden[0],
                                                  support=self.support,
@@ -303,7 +308,8 @@ class RecommenderSideInfoGAE(Model):
 
         else:
             raise ValueError('accumulation function option invalid, can only be stack or sum.')
-
+        
+        #builds the dense layers 
         self.layers.append(Dense(input_dim=self.num_side_features,
                                  output_dim=self.feat_hidden_dim,
                                  act=tf.nn.relu,
@@ -331,7 +337,8 @@ class RecommenderSideInfoGAE(Model):
                                            num_weights=self.num_basis_functions,
                                            logging=self.logging,
                                            diagonal=False))
-
+    
+    #THIS IS WHERE THE GAE LAYER IS BUILT 
     def build(self):
         """ Wrapper for _build() """
         with tf.variable_scope(self.name):
@@ -354,7 +361,8 @@ class RecommenderSideInfoGAE(Model):
         gcn_v = gcn_hidden[1]
         feat_u = feat_hidden[0]
         feat_v = feat_hidden[1]
-
+        
+        #Concatenates the list of tensors values along dimension axis
         input_u = tf.concat(values=[gcn_u, feat_u], axis=1)
         input_v = tf.concat(values=[gcn_v, feat_v], axis=1)
 
