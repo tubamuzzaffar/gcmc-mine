@@ -55,7 +55,7 @@ def load_matlab_file(path_file, name_field):
 
     return out
 
-
+#2. comes here to preprocess the user and item features 
 def preprocess_user_item_features(u_features, v_features):
     """
     Creates one big feature matrix out of user features and item features.
@@ -92,13 +92,15 @@ def globally_normalize_bipartite_adjacency(adjacencies, verbose=False, symmetric
     # degree_u and degree_v are row and column sums of adj+I
 
     adj_tot = np.sum(adj for adj in adjacencies)
+    #array is collapsed into one dimension
     degree_u = np.asarray(adj_tot.sum(1)).flatten()
     degree_v = np.asarray(adj_tot.sum(0)).flatten()
 
     # set zeros to inf to avoid dividing by zero
     degree_u[degree_u == 0.] = np.inf
     degree_v[degree_v == 0.] = np.inf
-
+    
+    
     degree_u_inv_sqrt = 1. / np.sqrt(degree_u)
     degree_v_inv_sqrt = 1. / np.sqrt(degree_v)
     degree_u_inv_sqrt_mat = sp.diags([degree_u_inv_sqrt], [0])
