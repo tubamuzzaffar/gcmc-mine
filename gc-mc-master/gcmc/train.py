@@ -444,14 +444,13 @@ for epoch in range(NB_EPOCH):
     val_avg_loss, val_rmse = sess.run([model.loss, model.rmse], feed_dict=val_feed_dict)
 
     if VERBOSE:
+        total_time += (time.time() - t)
         print("[*] Epoch:", '%04d' % (epoch + 1), "train_loss=", "{:.5f}".format(train_avg_loss),
               "train_rmse=", "{:.5f}".format(train_rmse),
               "val_loss=", "{:.5f}".format(val_avg_loss),
               "val_rmse=", "{:.5f}".format(val_rmse),
               "\t\ttime=", "{:.5f}".format(time.time() - t))
-    
-    total_time += (time.time() - t)
-    
+
     if val_rmse < best_val_score:
         best_val_score = val_rmse
         best_epoch = epoch
