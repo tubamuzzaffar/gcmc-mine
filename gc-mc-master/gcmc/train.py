@@ -427,6 +427,8 @@ wait = 0
 
 print('Training...')
 
+t=0
+total_time=0
 for epoch in range(NB_EPOCH):
 
     t = time.time()
@@ -447,7 +449,9 @@ for epoch in range(NB_EPOCH):
               "val_loss=", "{:.5f}".format(val_avg_loss),
               "val_rmse=", "{:.5f}".format(val_rmse),
               "\t\ttime=", "{:.5f}".format(time.time() - t))
-
+    
+    total_time += (time.time() - t)
+    
     if val_rmse < best_val_score:
         best_val_score = val_rmse
         best_epoch = epoch
@@ -486,10 +490,11 @@ for epoch in range(NB_EPOCH):
 saver = tf.train.Saver()
 save_path = saver.save(sess, "tmp/%s.ckpt" % model.name, global_step=model.global_step)
 
+averaget = total_time/NB_EPOCH
 
 if VERBOSE:
     print("\nOptimization Finished!")
-    print('best validation score =', best_val_score, 'at iteration', best_epoch)
+    print('best validation score =', best_val_score, 'at iteration', best_epoch, 'total time', t, 'average time', averaget)
 
 
 if TESTING:
