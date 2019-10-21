@@ -64,23 +64,9 @@ def preprocess_user_item_features(u_features, v_features):
 
     zero_csr_u = sp.csr_matrix((u_features.shape[0], v_features.shape[1]), dtype=u_features.dtype)
     zero_csr_v = sp.csr_matrix((v_features.shape[0], u_features.shape[1]), dtype=v_features.dtype)
-
-    print(zero_csr_u)
-    print("SFDFD")
-    print(zero_csr_v)
-    print("&")
-    print(u_features)
-    print("SFDFD")
-    print(v_features)
-    print("&")
     
     u_features = sp.hstack([u_features, zero_csr_u], format='csr')
     v_features = sp.hstack([zero_csr_v, v_features], format='csr')
-    
-    print(u_features)
-    print("SFDFD")
-    print(v_features)
-
     return u_features, v_features
 
 
@@ -577,15 +563,6 @@ def load_official_trainvaltest_split(dataset, testing=False):
 
     print("User features shape: "+str(u_features.shape))
     print("Item features shape: "+str(v_features.shape))
-    
-    print("THISSS")
-    print(u_features)
-    print(v_features)
-    print(rating_mx_train)
-    print(train_labels)
-    print(u_train_idx)
-    print(val_labels)
-
 
     return u_features, v_features, rating_mx_train, train_labels, u_train_idx, v_train_idx, \
         val_labels, u_val_idx, v_val_idx, test_labels, u_test_idx, v_test_idx, class_values
