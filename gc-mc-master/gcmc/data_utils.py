@@ -61,14 +61,13 @@ def map_data(data):
 
 def download_dataset(dataset, files, data_dir):
     """ Downloads dataset if files are not present. """
-
     if not np.all([os.path.isfile(data_dir + f) for f in files]):
         print(dataset,f,data_dir)
         url = "http://files.grouplens.org/datasets/movielens/" + dataset.replace('_', '-') + '.zip'
         request = urlopen(url)
 
         print('Downloading %s dataset' % dataset)
-        if dataset in ['ml_100k', 'ml_1m', 'mine_10k']:
+        if dataset in ['ml_100k', 'ml_1m']:
             target_dir = 'data/' + dataset.replace('_', '-')
         elif dataset == 'ml_10m':
             target_dir = 'data/' + 'ml-10M100K'
@@ -137,7 +136,7 @@ def load_data(fname, seed=1234, verbose=True):
         # Check if files exist and download otherwise
         files = ['/u.data', '/u.item', '/u.user']
 
-        download_dataset(fname, files, data_dir)
+        #download_dataset(fname, files, data_dir)
 
         sep = '\t'
         filename = data_dir + files[0]
