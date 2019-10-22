@@ -32,7 +32,7 @@ tf.set_random_seed(seed)
 # various arguments it takes in 
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", type=str, default="ml_1m",
-                choices=['ml_100k', 'ml_1m', 'ml_10m', 'douban', 'yahoo_music', 'flixster'],
+                choices=['mine_10k','ml_100k', 'ml_1m', 'ml_10m', 'douban', 'yahoo_music', 'flixster'],
                 help="Dataset string.")
 
 ap.add_argument("-lr", "--learning_rate", type=float, default=0.01,
@@ -121,7 +121,7 @@ VERBOSE = True
 
 
 #Number of classes -->i.e. rating levels?
-if DATASET == 'ml_1m' or DATASET == 'ml_100k' or DATASET == 'douban':
+if DATASET == 'ml_1m' or DATASET == 'ml_100k' or DATASET = 'mine_10k' or'mine_or DATASET == 'douban':
     NUMCLASSES = 5
 elif DATASET == 'ml_10m':
     NUMCLASSES = 10
@@ -158,7 +158,7 @@ if DATASET == 'flixster' or DATASET == 'douban' or DATASET == 'yahoo_music':
 
     
 #FOCUSING ON THIS ONE    
-elif DATASET == 'ml_100k':
+elif DATASET == 'ml_100k' or DATASET == 'mine_10k':
     print("Using official MovieLens dataset split u1.base/u1.test with 20% validation set size...")
     u_features, v_features, adj_train, train_labels, train_u_indices, train_v_indices, \
         val_labels, val_u_indices, val_v_indices, test_labels, \
