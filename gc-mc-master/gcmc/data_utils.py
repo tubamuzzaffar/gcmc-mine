@@ -131,7 +131,7 @@ def load_data(fname, seed=1234, verbose=True):
 
     data_dir = 'data/' + fname
 
-    if fname == 'ml_100k':
+    if fname == 'ml_100k' or fname == 'mine_10k':
 
         # Check if files exist and download otherwise
         files = ['/u.data', '/u.item', '/u.user']
