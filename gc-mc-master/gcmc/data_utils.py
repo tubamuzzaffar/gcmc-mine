@@ -63,7 +63,7 @@ def download_dataset(dataset, files, data_dir):
     """ Downloads dataset if files are not present. """
 
     if not np.all([os.path.isfile(data_dir + f) for f in files]):
-        print(fname,f,data_dir)
+        print(dataset,f,data_dir)
         url = "http://files.grouplens.org/datasets/movielens/" + dataset.replace('_', '-') + '.zip'
         request = urlopen(url)
 
