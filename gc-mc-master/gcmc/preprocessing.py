@@ -456,6 +456,7 @@ def load_official_trainvaltest_split(dataset, testing=False):
         sep = r'|'
         movie_file = 'data/' + dataset + '/u.item'
         movie_headers = ['Animals','Art','Chemistry','Biology','Monstors','History','Geography','Health','Heroes','Cars','Dolls','Food','Planes','Insects','Space','Transport','Health','Pirates']
+        print(movie_headers)
         movie_df = pd.read_csv(movie_file, sep=sep, header=None,names=movie_headers, engine='python')
         print("HELLO")
         genre_headers = movie_df.columns.values[6:]
