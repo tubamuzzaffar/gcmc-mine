@@ -450,16 +450,12 @@ def load_official_trainvaltest_split(dataset, testing=False):
 
     class_values = np.sort(np.unique(ratings))
 
-    if dataset =='ml_100k':
+    if dataset =='ml_100k' or dataset=='mine_10k':
 
         # movie features (genres)
         sep = r'|'
         movie_file = 'data/' + dataset + '/u.item'
-        movie_headers = ['movie id', 'movie title', 'release date', 'video release date',
-                         'IMDb URL', 'Animals', 'Art', 'Chemistry', 'Biology',
-                         'Monstors', 'History', 'Geography', 'Health', 'Heroes', 'Fantasy',
-                         'Cars', 'Dolls', 'Food', 'Planes', 'Insects', 'Space',
-                         'Transport', 'Health', 'Pirates']
+        movie_headers = ['Animals','Art','Chemistry','Biology','Monstors','History','Geography','Health','Heroes','Cars','Dolls','Food','Planes','Insects','Space','Transport','Health','Pirates']
         movie_df = pd.read_csv(movie_file, sep=sep, header=None,
                                names=movie_headers, engine='python')
 
