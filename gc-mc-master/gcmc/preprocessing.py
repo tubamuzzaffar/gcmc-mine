@@ -338,7 +338,7 @@ def load_official_trainvaltest_split(dataset, testing=False):
     fname = dataset
     data_dir = 'data/' + fname
 
-    #download_dataset(fname, files, data_dir)
+    download_dataset(fname, files, data_dir)
 
     dtypes = {
         'u_nodes': np.int32, 'v_nodes': np.int32,
