@@ -67,7 +67,7 @@ def download_dataset(dataset, files, data_dir):
         request = urlopen(url)
 
         print('Downloading %s dataset' % dataset)
-        if dataset in ['ml_100k', 'ml_1m']:
+        if dataset in ['ml_100k', 'ml_1m', 'mine_10k']:
             target_dir = 'data/' + dataset.replace('_', '-')
         elif dataset == 'ml_10m':
             target_dir = 'data/' + 'ml-10M100K'
@@ -169,11 +169,7 @@ def load_data(fname, seed=1234, verbose=True):
         # Movie features (genres)
         sep = r'|'
         movie_file = data_dir + files[1]
-        movie_headers = ['movie id', 'movie title', 'release date', 'video release date',
-                         'IMDb URL', 'unknown', 'Action', 'Adventure', 'Animation',
-                         'Childrens', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Fantasy',
-                         'Film-Noir', 'Horror', 'Musical', 'Mystery', 'Romance', 'Sci-Fi',
-                         'Thriller', 'War', 'Western']
+        movie_headers = ['Animals','Art','Chemistry','Biology','Monstors','History','Geography','Health','Heroes','Cars','Dolls','Food','Planes','Insects','Space','Transport','Health','Pirates']
         movie_df = pd.read_csv(movie_file, sep=sep, header=None,
                                names=movie_headers, engine='python')
 
