@@ -121,7 +121,7 @@ VERBOSE = True
 
 
 #Number of classes -->i.e. rating levels?
-if DATASET == 'ml_1m' or DATASET == 'ml_100k' or DATASET == 'mine_10k' or'mine_or DATASET == 'douban':
+if DATASET == 'ml_1m' or DATASET == 'ml_100k' or DATASET == 'mine_10k' or DATASET == 'douban':
     NUMCLASSES = 5
 elif DATASET == 'ml_10m':
     NUMCLASSES = 10
