@@ -149,6 +149,8 @@ def create_trainvaltest_split(dataset, seed=1234, testing=False, datasplit_path=
 
     labels = np.full((num_users, num_items), neutral_rating, dtype=np.int32)
     labels[u_nodes, v_nodes] = np.array([rating_dict[r] for r in ratings])
+    print("labels:")
+    print(labels)
     labels = labels.reshape([-1])
 
     # number of test and validation edges
@@ -161,7 +163,10 @@ def create_trainvaltest_split(dataset, seed=1234, testing=False, datasplit_path=
     num_train = ratings.shape[0] - num_val - num_test
 
     pairs_nonzero = np.array([[u, v] for u, v in zip(u_nodes, v_nodes)])
-
+    print("pairs non zero SDFDSFDSFSDFDSFDS")
+    print(pairs_nonzero)
+    print([u,v])
+    print(v in zip(u_nodes, v_nodes))
     idx_nonzero = np.array([u * num_items + v for u, v in pairs_nonzero])
 
     train_idx = idx_nonzero[0:num_train]
